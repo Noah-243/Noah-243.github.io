@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="color-scheme" content="dark light">
   <title>Noah Shumaf - Portfolio</title>
   <style>
     :root{--bg:#0b0f14;--card:#121821;--soft:#1b2533;--txt:#eaf2ff;--muted:#a8bed8;--acc:#67b3ff}
@@ -21,7 +22,6 @@
     a.btn{display:inline-block;background:var(--acc);color:#001628;padding:8px 12px;border-radius:10px;margin-top:10px;text-decoration:none;font-weight:700}
     .note{font-size:14px;color:var(--muted)}
     footer{border-top:1px solid #1e2a39;margin-top:28px;padding:16px 0;color:#a9bed8}
-    /* repo list */
     .repo{display:flex;flex-direction:column;gap:6px}
     .repo a{color:var(--acc);text-decoration:none}
     .repo .meta{font-size:12px;color:var(--muted)}
@@ -43,7 +43,7 @@
       </nav>
     </header>
 
-    <!-- FEATURED (manual, your top 2–4) -->
+    <!-- FEATURED -->
     <section id="featured">
       <h2>Featured projects</h2>
       <div class="grid">
@@ -54,7 +54,7 @@
           <div>
             <span class="pill">React</span><span class="pill">Node</span><span class="pill">MongoDB</span><span class="pill">Gemini</span>
           </div>
-          <a class="btn" href="https://github.com/Noah-243/Smart-Exam-Platform" target="_blank">View on GitHub</a>
+          <a class="btn" href="https://github.com/Noah-243/Smart-Exam-Platform" target="_blank" rel="noopener">View on GitHub</a>
         </article>
 
         <article class="card">
@@ -62,7 +62,7 @@
           <h3>Automated Research Paper Reviewer</h3>
           <p class="muted">Desktop app (Python/Tkinter) that analyzes papers and exports structured reviews.</p>
           <div><span class="pill">Python</span><span class="pill">Tkinter</span></div>
-          <a class="btn" href="https://github.com/Noah-243" target="_blank">Repository</a>
+          <a class="btn" href="https://github.com/Noah-243" target="_blank" rel="noopener">Repository</a>
         </article>
       </div>
     </section>
@@ -70,25 +70,24 @@
     <!-- GITHUB (auto) -->
     <section id="github">
       <h2>GitHub projects</h2>
-      <div class="note">
-        This list pulls from your public repositories. Mark a repo with the topic <code>portfolio</code> to force‑include it; forks and archived repos are hidden.
-      </div>
+      <div class="note">Automatically lists your public repositories (forks/archived are hidden).</div>
       <div id="repoGrid" class="grid"></div>
+      <div id="repoError" class="note"></div>
     </section>
 
-    <!-- OTHER PROJECTS from projects.json -->
+    <!-- OTHER PROJECTS (projects.json) -->
     <section id="other">
       <h2>Other projects</h2>
       <div id="otherGrid" class="grid"></div>
-      <div class="note">Edit <code>projects.json</code> in this repo to add items here (Tableau, Wix, demos, PDFs, etc.).</div>
+      <div class="note">Edit <code>projects.json</code> to add items (Tableau, demos, PDFs, Wix, וכו’).</div>
     </section>
 
     <section id="contact">
       <h2>Contact</h2>
       <div class="card">
         <p>Email: <a href="mailto:noahshumaf@gmail.com">noahshumaf@gmail.com</a></p>
-        <p>LinkedIn: <a href="https://www.linkedin.com/in/noah-shumaf/" target="_blank">linkedin.com/in/noah-shumaf</a></p>
-        <p>GitHub: <a href="https://github.com/Noah-243" target="_blank">github.com/Noah-243</a></p>
+        <p>LinkedIn: <a href="https://www.linkedin.com/in/noah-shumaf/" target="_blank" rel="noopener">linkedin.com/in/noah-shumaf</a></p>
+        <p>GitHub: <a href="https://github.com/Noah-243" target="_blank" rel="noopener">github.com/Noah-243</a></p>
       </div>
     </section>
 
@@ -98,57 +97,60 @@
   <script>
     document.getElementById('y').textContent = new Date().getFullYear();
 
-    // -------- GitHub repos (auto) --------
+    // ------- GitHub repos (auto) -------
     const GH_USER = "Noah-243";
     async function loadRepos() {
+      const grid = document.getElementById('repoGrid');
+      const errBox = document.getElementById('repoError');
       try {
         const res = await fetch(`https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=updated`);
         const data = await res.json();
-        // Filter: hide forks/archived; show those with topic 'portfolio' or with code
-        const filtered = data.filter(r =>
-          !r.fork && !r.archived &&
-          ( (r.topics && r.topics.includes('portfolio')) || true )
-        );
-        // Optional: exclude repos by name:
-        const exclude = new Set(["Noah-243.github.io"]);
-        const repos = filtered.filter(r => !exclude.has(r.name));
 
-        const grid = document.getElementById('repoGrid');
+        if (!Array.isArray(data)) {
+          // Likely an error (rate limit, etc.)
+          errBox.textContent = (data && data.message)
+            ? `GitHub API error: ${data.message}`
+            : 'Could not load repositories.';
+          return;
+        }
+
+        // Hide forks/archived and exclude this site repo
+        const exclude = new Set(["Noah-243.github.io"]);
+        const repos = data
+          .filter(r => !r.fork && !r.archived && !exclude.has(r.name))
+          .sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at));
+
         grid.innerHTML = repos.map(r => `
           <article class="card repo">
-            <h3><a href="${r.html_url}" target="_blank">${r.name}</a></h3>
-            <div class="muted">${r.description || "No description"}</div>
+            <h3><a href="${r.html_url}" target="_blank" rel="noopener">${r.name}</a></h3>
+            <div class="muted">${r.description ? r.description : "No description"}</div>
             <div class="meta">★ ${r.stargazers_count} • ${r.language || "—"} • Updated ${new Date(r.updated_at).toLocaleDateString()}</div>
-            <div>
-              ${(r.topics||[]).slice(0,5).map(t=>`<span class="pill">${t}</span>`).join("")}
-            </div>
-            <a class="btn" href="${r.html_url}" target="_blank">Open Repository</a>
+            <a class="btn" href="${r.html_url}" target="_blank" rel="noopener">Open Repository</a>
           </article>
         `).join('');
-      } catch(e) {
-        document.getElementById('repoGrid').innerHTML =
-          '<div class="card">Could not load repositories. Try again later.</div>';
+      } catch (e) {
         console.error(e);
+        errBox.textContent = 'Could not load repositories. Please try again later.';
       }
     }
 
-    // -------- Other projects (projects.json) --------
+    // ------- Other projects (projects.json) -------
     async function loadOther() {
       try {
-        const res = await fetch('projects.json');
-        if (!res.ok) return;
+        const res = await fetch('projects.json', {cache: "no-cache"});
+        if (!res.ok) return; // if file doesn't exist – just skip
         const items = await res.json();
         const grid = document.getElementById('otherGrid');
         grid.innerHTML = items.map(p => `
           <article class="card">
             ${p.image ? `<img class="thumb" src="${p.image}" alt="${p.title}"/>` : ''}
             <h3>${p.title}</h3>
-            <p class="muted">${p.description||""}</p>
-            <div>${(p.tags||[]).map(t=>`<span class="pill">${t}</span>`).join("")}</div>
-            ${p.link ? `<a class="btn" href="${p.link}" target="_blank">${p.linkText||"Open"}</a>` : ""}
+            <p class="muted">${p.description || ""}</p>
+            <div>${(p.tags || []).map(t => `<span class="pill">${t}</span>`).join("")}</div>
+            ${p.link ? `<a class="btn" href="${p.link}" target="_blank" rel="noopener">${p.linkText || "Open"}</a>` : ""}
           </article>
         `).join('');
-      } catch(e) { /* silently ignore if file missing */ }
+      } catch { /* ignore */ }
     }
 
     loadRepos();
