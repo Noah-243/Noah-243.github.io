@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Hypertension DSS – Tableau Dashboard",
+    "description": "Risk scoring and rule-based recommendations based on NICE guidelines.",
+    "tags": ["Tableau", "Healthcare", "DSS"],
+    "link": "https://public.tableau.com/views/YourDashboardHere",
+    "linkText": "View Dashboard",
+    "image": "assets/hypertension-dss-thumb.jpg"
+  },
+  {
+    "title": "Smart Exam – Live Demo",
+    "description": "Hosted demo of the exam creation and grading flow.",
+    "tags": ["React", "Node", "MongoDB"],
+    "link": "https://your-live-demo-url.example",
+    "linkText": "Open Demo",
+    "image": "assets/smart-exam-thumb.jpg"
+  }
+]
