@@ -1,51 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Noah Shumaf - Portfolio</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; line-height: 1.6; background: #f5f5f5; }
-    header { background: #222; color: #fff; padding: 20px 0; text-align: center; }
-    nav a { color: #fff; margin: 0 15px; text-decoration: none; }
-    .container { width: 90%; margin: auto; overflow: hidden; padding: 20px; }
-    h1, h2 { color: #333; }
-    .project { background: #fff; padding: 15px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-    footer { background: #222; color: #fff; text-align: center; padding: 10px 0; margin-top: 20px; }
+    :root{--bg:#0b0f14;--card:#121821;--soft:#1b2533;--txt:#eaf2ff;--muted:#a8bed8;--acc:#67b3ff}
+    *{box-sizing:border-box} html,body{margin:0}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);color:var(--txt)}
+    .wrap{max-width:1080px;margin:auto;padding:20px}
+    header{display:flex;justify-content:space-between;align-items:center;padding:14px 0 10px;border-bottom:1px solid #1e2a39}
+    nav a{color:var(--muted);margin-left:16px;text-decoration:none} nav a:hover{color:var(--txt)}
+    h1{margin:8px 0 0;font-size:24px}
+    h2{margin:26px 0 12px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+    .card{background:var(--card);border:1px solid #1e2a39;border-radius:14px;padding:16px}
+    .card h3{margin:8px 0 6px}
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;background:var(--soft);border:1px solid #223248;border-radius:999px;padding:4px 10px;margin:4px 6px 0 0;font-size:12px;color:#cfe3ff}
+    a.btn{display:inline-block;background:var(--acc);color:#001628;padding:8px 12px;border-radius:10px;margin-top:10px;text-decoration:none;font-weight:700}
+    .note{font-size:14px;color:var(--muted)}
+    footer{border-top:1px solid #1e2a39;margin-top:28px;padding:16px 0;color:#a9bed8}
+    /* repo list */
+    .repo{display:flex;flex-direction:column;gap:6px}
+    .repo a{color:var(--acc);text-decoration:none}
+    .repo .meta{font-size:12px;color:var(--muted)}
+    .thumb{width:100%;height:150px;object-fit:cover;border-radius:10px;border:1px solid #223248;background:#101722}
   </style>
 </head>
 <body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Noah Shumaf</h1>
+        <div class="note">Information Systems (Software) — AI, Web, Data</div>
+      </div>
+      <nav>
+        <a href="#featured">Featured</a>
+        <a href="#github">GitHub</a>
+        <a href="#other">Other Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
 
-<header>
-  <h1>Noah Shumaf</h1>
-  <nav>
-    <a href="#projects">Projects</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-  </nav>
-</header>
+    <!-- FEATURED (manual, your top 2–4) -->
+    <section id="featured">
+      <h2>Featured projects</h2>
+      <div class="grid">
+        <article class="card">
+          <img class="thumb" src="assets/smart-exam-thumb.jpg" alt="Smart Exam AI"/>
+          <h3>Smart Exam AI</h3>
+          <p class="muted">Full platform for creating & grading exams with LLM feedback (React, Node, MongoDB, Gemini).</p>
+          <div>
+            <span class="pill">React</span><span class="pill">Node</span><span class="pill">MongoDB</span><span class="pill">Gemini</span>
+          </div>
+          <a class="btn" href="https://github.com/Noah-243/Smart-Exam-Platform" target="_blank">View on GitHub</a>
+        </article>
 
-<div class="container">
-  <section id="projects">
-    <h2>Projects</h2>
+        <article class="card">
+          <img class="thumb" src="assets/paper-reviewer-thumb.jpg" alt="Automated Research Paper Reviewer"/>
+          <h3>Automated Research Paper Reviewer</h3>
+          <p class="muted">Desktop app (Python/Tkinter) that analyzes papers and exports structured reviews.</p>
+          <div><span class="pill">Python</span><span class="pill">Tkinter</span></div>
+          <a class="btn" href="https://github.com/Noah-243" target="_blank">Repository</a>
+        </article>
+      </div>
+    </section>
 
-    <div class="project">
-      <h3>Smart Exam AI</h3>
-      <p>AI-powered exam management system with automated grading, built using React, Node.js, and MongoDB.</p>
-      <a href="https://github.com/Noah-243/Smart-Exam-Platform" target="_blank">View on GitHub</a>
-    </div>
+    <!-- GITHUB (auto) -->
+    <section id="github">
+      <h2>GitHub projects</h2>
+      <div class="note">
+        This list pulls from your public repositories. Mark a repo with the topic <code>portfolio</code> to force‑include it; forks and archived repos are hidden.
+      </div>
+      <div id="repoGrid" class="grid"></div>
+    </section>
 
-    <div class="project">
-      <h3>Automated Research Paper Reviewer</h3>
-      <p>Desktop app (Python + Tkinter) that reviews academic papers and generates structured feedback.</p>
-    </div>
+    <!-- OTHER PROJECTS from projects.json -->
+    <section id="other">
+      <h2>Other projects</h2>
+      <div id="otherGrid" class="grid"></div>
+      <div class="note">Edit <code>projects.json</code> in this repo to add items here (Tableau, Wix, demos, PDFs, etc.).</div>
+    </section>
 
-    <div class="project">
-      <h3>Hypertension Clinical DSS</h3>
-      <p>Tableau dashboards and rules engine for clinical decision support based on NICE guidelines.</p>
-    </div>
-  </section>
+    <section id="contact">
+      <h2>Contact</h2>
+      <div class="card">
+        <p>Email: <a href="mailto:noahshumaf@gmail.com">noahshumaf@gmail.com</a></p>
+        <p>LinkedIn: <a href="https://www.linkedin.com/in/noah-shumaf/" target="_blank">linkedin.com/in/noah-shumaf</a></p>
+        <p>GitHub: <a href="https://github.com/Noah-243" target="_blank">github.com/Noah-243</a></p>
+      </div>
+    </section>
 
-  <section id="about">
-    <h2>About Me</h2>
-    <p>Information Systems (Software Track) graduate passionate about AI, web development, and data analytics. Seeking an entry-level position in software or information systems development.</p
+    <footer>© <span id="y"></span> Noah Shumaf • Built with GitHub Pages</footer>
+  </div>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // -------- GitHub repos (auto) --------
+    const GH_USER = "Noah-243";
+    async function loadRepos() {
+      try {
+        const res = await fetch(`https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=updated`);
+        const data = await res.json();
+        // Filter: hide forks/archived; show those with topic 'portfolio' or with code
+        const filtered = data.filter(r =>
+          !r.fork && !r.archived &&
+          ( (r.topics && r.topics.includes('portfolio')) || true )
+        );
+        // Optional: exclude repos by name:
+        const exclude = new Set(["Noah-243.github.io"]);
+        const repos = filtered.filter(r => !exclude.has(r.name));
+
+        const grid = document.getElementById('repoGrid');
+        grid.innerHTML = repos.map(r => `
+          <article class="card repo">
+            <h3><a href="${r.html_url}" target="_blank">${r.name}</a></h3>
+            <div class="muted">${r.description || "No description"}</div>
+            <div class="meta">★ ${r.stargazers_count} • ${r.language || "—"} • Updated ${new Date(r.updated_at).toLocaleDateString()}</div>
+            <div>
+              ${(r.topics||[]).slice(0,5).map(t=>`<span class="pill">${t}</span>`).join("")}
+            </div>
+            <a class="btn" href="${r.html_url}" target="_blank">Open Repository</a>
+          </article>
+        `).join('');
+      } catch(e) {
+        document.getElementById('repoGrid').innerHTML =
+          '<div class="card">Could not load repositories. Try again later.</div>';
+        console.error(e);
+      }
+    }
+
+    // -------- Other projects (projects.json) --------
+    async function loadOther() {
+      try {
+        const res = await fetch('projects.json');
+        if (!res.ok) return;
+        const items = await res.json();
+        const grid = document.getElementById('otherGrid');
+        grid.innerHTML = items.map(p => `
+          <article class="card">
+            ${p.image ? `<img class="thumb" src="${p.image}" alt="${p.title}"/>` : ''}
+            <h3>${p.title}</h3>
+            <p class="muted">${p.description||""}</p>
+            <div>${(p.tags||[]).map(t=>`<span class="pill">${t}</span>`).join("")}</div>
+            ${p.link ? `<a class="btn" href="${p.link}" target="_blank">${p.linkText||"Open"}</a>` : ""}
+          </article>
+        `).join('');
+      } catch(e) { /* silently ignore if file missing */ }
+    }
+
+    loadRepos();
+    loadOther();
+  </script>
+</body>
+</html>
